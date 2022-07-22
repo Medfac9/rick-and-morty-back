@@ -1,9 +1,7 @@
-/* eslint-disable import/no-import-module-exports */
-/* eslint-disable import/extensions */
-/* eslint-disable import/no-unresolved */
+import { Location } from './interfaces';
 import repository from './models';
 
-const create = async (body) => {
+const create = async (body: Location) => {
   try {
     const localitation = await repository.create(body);
 

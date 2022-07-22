@@ -1,9 +1,7 @@
-/* eslint-disable import/extensions */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/no-import-module-exports */
 import db from '../db';
+import { Location } from './interfaces';
 
-const create = (obj) => (
+const create = (obj: Location) => (
   db('location')
     .insert(obj)
 );

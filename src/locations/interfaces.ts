@@ -1,8 +1,5 @@
-import { Request } from 'express';
-
-export interface Location extends Request {
-    id: number
+export interface Location {
     character_id: number
     name: string
-    image: URL
+    url: string
 }

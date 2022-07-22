@@ -1,5 +1,3 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/extensions */
 import { Origin } from '../origins/interfaces';
 import { Location } from '../locations/interfaces';
 
@@ -10,7 +8,7 @@ export interface Character {
     species: string
     type?: string
     gender: 'male' | 'female' | 'genderless' | 'unknown'
-    image?: URL
+    image?: string
     created: Date | null
 }
 
@@ -30,17 +28,13 @@ export interface Result {
     gender: 'male' | 'female' | 'genderless' | 'unknown'
     origin: Origin
     location: Location
-    image?: URL
+    image?: string
     episode: []
-    url: URL
+    url: string
     created: Date | null
 }
 
 export interface DataImported {
     info: Info
     results: Result[]
-}
-
-export interface ID {
-    id: string
 }

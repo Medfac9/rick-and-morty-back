@@ -7,6 +7,7 @@ const db = (knex)({
     user: 'root',
     password: '1234',
     database: 'rick_and_morty',
+    // FIXME: no funciona con el enviroment
     // host: process.env.DB_HOST,
     // user: process.env.DB_USER,
     // password: process.env.DB_PASSWORD,

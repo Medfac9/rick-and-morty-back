@@ -1,25 +1,27 @@
-import { Character } from './interfaces';
+import { User } from './interfaces';
 import db from '../db';
 
+const dataBase = 'user';
+
 const list = (params = {}) => (
-  db('character')
+  db(dataBase)
     .where(params)
     .select()
 );
 
-const update = (id: string, obj: Partial<Character>) => (
-  db('character')
+const update = (id: string, obj: Partial<User>) => (
+  db(dataBase)
     .where('id', '=', id)
     .update(obj)
 );
 
-const create = (obj: Character) => (
-  db('character')
+const create = (obj: User) => (
+  db(dataBase)
     .insert(obj)
 );
 
 const del = (id: string) => (
-  db('character')
+  db(dataBase)
     .where('id', '=', id)
     .del()
 );

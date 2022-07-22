@@ -1,43 +1,41 @@
 /* eslint-disable no-await-in-loop */
-/* eslint-disable import/extensions */
-/* eslint-disable import/no-unresolved */
-
-import { Character } from 'characters/interfaces';
-import express, { Request, Response } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
+import { Character } from '../characters/interfaces';
 import serviceCharacter from '../characters/services';
 import serviceLocation from '../locations/services';
 import serviceOrigin from '../origins/services';
+import HttpException from '../exceptions/HttpException';
 
-const list = async (req: Request, res: Response): Promise<void> => {
+const list = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const characters: Character[] = await serviceCharacter.list();
 
     if (!characters.length) {
-      res.status(404).json({ error: 'The characters don´t exist' });
+      throw new HttpException(404, 'The characters don´t exist');
     } else {
-      res.json(characters);
+      throw new HttpException(200, characters);
     }
   } catch (error) {
-    res.status(500).json({ error });
+    next(error);
   }
 };
 
-const view = async (req: Request, res: Response) => {
+const view = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const character: Character[] = await serviceCharacter.view(id);
 
     if (!character.length) {
-      res.status(404).json({ error: 'The character doesn´t exist' });
+      throw new HttpException(404, 'The characters don´t exist');
     } else {
-      res.json(character);
+      throw new HttpException(200, character);
     }
   } catch (error) {
-    res.status(500).json({ error });
+    next(error);
   }
 };
 
-const importCharacter = async (req: Request, res: Response) => {
+const importCharacter = async (req: Request, res: Response, next: NextFunction) => {
   let url = null;
   const response = [];
 
@@ -86,60 +84,64 @@ const importCharacter = async (req: Request, res: Response) => {
 
           response.push(imported);
         } catch (error) {
-          res.status(500).json({ error });
+          next(error);
         }
       }
     } catch (error) {
-      res.status(500).json({ error });
+      next(error);
     }
   } while (url);
 
-  res.status(201).json(response);
-};
-
-const create = async (req: Request, res: Response) => {
   try {
-    const { body } = req;
-    const character: number[] = await serviceCharacter.create(body);
-
-    if (!character.length) {
-      res.status(500).json({ error: 'The character have not created' });
-    } else {
-      res.status(201).json(character);
-    }
+    throw new HttpException(201, response);
   } catch (error) {
-    res.status(500).json({ error });
+    next(error);
   }
 };
 
-const update = async (req: Request, res: Response) => {
+const create = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { body } = req;
+    const character: Character[] = await serviceCharacter.create(body);
+
+    if (!character.length) {
+      throw new HttpException(500, 'The character have not created');
+    } else {
+      throw new HttpException(201, character);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const { body } = req;
     const character: number = await serviceCharacter.update(id, body);
 
     if (character !== 1) {
-      res.status(404).json({ error: 'The characters don´t exist' });
+      throw new HttpException(404, 'The character don´t exist');
     } else {
-      res.json(character);
+      throw new HttpException(200, 'The character updated');
     }
   } catch (error) {
-    res.status(500).json({ error });
+    next(error);
   }
 };
 
-const del = async (req: Request, res: Response) => {
+const del = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
     const character: number = await serviceCharacter.del(id);
 
     if (character !== 1) {
-      res.status(404).json({ error: 'The characters don´t exist' });
+      throw new HttpException(404, 'The character don´t exist');
     } else {
-      res.json(character);
+      throw new HttpException(200, 'The character deleted');
     }
   } catch (error) {
-    res.status(500).json({ error });
+    next(error);
   }
 };
 

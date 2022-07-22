@@ -1,8 +1,5 @@
-/* eslint-disable import/extensions */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/no-import-module-exports */
-import { Character, DataImported } from 'characters/interfaces';
 import axios from 'axios';
+import { Character, DataImported } from './interfaces';
 import repository from './models';
 
 const importCharacter = async (url: string = null): Promise<DataImported> => {
@@ -29,10 +26,11 @@ const view = async (id: string): Promise<Character[]> => {
   return character;
 };
 
-const create = async (character: Character): Promise<number[]> => {
+const create = async (character: Character): Promise<Character[]> => {
   try {
-    const characterNew = await repository.create(character);
+    const characterId = await repository.create(character);
 
+    const characterNew = view(characterId[0].toString());
     return characterNew;
   } catch (error) {
     return error;
@@ -41,7 +39,7 @@ const create = async (character: Character): Promise<number[]> => {
 
 const update = async (id: string, character: Character): Promise<number> => {
   try {
-    const characterUpdated = await repository.update({ id }, character);
+    const characterUpdated = await repository.update(id, character);
 
     return characterUpdated;
   } catch (error) {
@@ -51,7 +49,7 @@ const update = async (id: string, character: Character): Promise<number> => {
 
 const del = async (id: string): Promise<number> => {
   try {
-    const character = await repository.del({ id });
+    const character = await repository.del(id);
 
     return character;
   } catch (error) {
