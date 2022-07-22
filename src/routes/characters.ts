@@ -31,6 +31,7 @@ const view = async (req: Request, res: Response, next: NextFunction) => {
 const importCharacter = async (req: Request, res: Response, next: NextFunction) => {
   let url = null;
   const response = [];
+  const { token } = req.cookies;
 
   do {
     try {
@@ -65,7 +66,7 @@ const importCharacter = async (req: Request, res: Response, next: NextFunction) 
         };
 
         try {
-          const characterImported = await serviceCharacter.create(character);
+          const characterImported = await serviceCharacter.create(character, token);
           const locationsImported = await serviceLocation.create(location);
           const originsImported = await serviceOrigin.create(origin);
 
@@ -95,8 +96,10 @@ const importCharacter = async (req: Request, res: Response, next: NextFunction) 
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const { token } = req.cookies;
     const { body } = req;
-    const character: Character = await serviceCharacter.create(body);
+
+    const character: Character = await serviceCharacter.create(body, token);
 
     res.status(201).json({ character });
     next();
@@ -106,11 +109,13 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const update = async (req: Request, res: Response, next: NextFunction) => {
+  const { token } = req.cookies;
+
   try {
     const { id } = req.params;
     const { body } = req;
 
-    await serviceCharacter.update(id, body);
+    await serviceCharacter.update(id, body, token);
 
     res.status(200).json({ message: 'The character updated' });
     next();
@@ -120,9 +125,11 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const del = async (req: Request, res: Response, next: NextFunction) => {
+  const { token } = req.cookies;
+
   try {
     const { id } = req.params;
-    await serviceCharacter.del(id);
+    await serviceCharacter.del(id, token);
 
     res.status(200).json({ message: 'The character deleted' });
     next();

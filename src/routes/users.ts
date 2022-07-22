@@ -8,7 +8,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
     const { username, password } = req.body;
     const accessToken: string = await serviceUser.login(username, password);
 
-    res.status(200).json({ accessToken });
+    res.status(200).cookie('token', accessToken).json({ accessToken });
     next();
   } catch (error) {
     next(error);

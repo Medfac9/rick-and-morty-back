@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import axios from 'axios';
 import HttpException from '../exceptions/HttpException';
 import DocumentNotFound from '../exceptions/DocumentNotFound';
@@ -36,7 +37,17 @@ const view = async (id: string): Promise<Character> => {
   return character[0];
 };
 
-const create = async (character: Character): Promise<Character> => {
+const create = async (character: Character, token: string): Promise<Character> => {
+  if (!token) {
+    throw new HttpException(403, 'Access denied');
+  }
+
+  const verify = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+  if (!verify) {
+    throw new HttpException(403, 'Access denied');
+  }
+
   const characterId = await repository.create(character);
 
   if (!character) {
@@ -47,7 +58,17 @@ const create = async (character: Character): Promise<Character> => {
   return characterNew;
 };
 
-const update = async (id: string, character: Character): Promise<number> => {
+const update = async (id: string, character: Character, token: string): Promise<number> => {
+  if (!token) {
+    throw new HttpException(403, 'Access denied');
+  }
+
+  const verify = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+  if (!verify) {
+    throw new HttpException(403, 'Access denied');
+  }
+
   const characterUpdated = await repository.update(id, character);
 
   if (characterUpdated !== 1) {
@@ -57,7 +78,17 @@ const update = async (id: string, character: Character): Promise<number> => {
   return characterUpdated;
 };
 
-const del = async (id: string): Promise<number> => {
+const del = async (id: string, token: string): Promise<number> => {
+  if (!token) {
+    throw new HttpException(403, 'Access denied');
+  }
+
+  const verify = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+  if (!verify) {
+    throw new HttpException(403, 'Access denied');
+  }
+
   const character = await repository.del(id);
 
   if (character !== 1) {
