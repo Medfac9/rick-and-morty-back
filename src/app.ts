@@ -1,9 +1,9 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import * as dotenv from 'dotenv';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import errorHandler from './middlewares/handler';
+import errorHandler from './middlewares/errors';
 import router from './routes/index';
 
 const app = express();

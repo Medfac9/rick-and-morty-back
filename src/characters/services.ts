@@ -1,4 +1,6 @@
 import axios from 'axios';
+import HttpException from '../exceptions/HttpException';
+import DocumentNotFound from '../exceptions/DocumentNotFound';
 import { Character, DataImported } from './interfaces';
 import repository from './models';
 
@@ -17,44 +19,52 @@ const importCharacter = async (url: string = null): Promise<DataImported> => {
 const list = async (): Promise<Character[]> => {
   const characters: Character[] = await repository.list();
 
+  if (characters.length === 0) {
+    throw new DocumentNotFound();
+  }
+
   return characters;
 };
 
-const view = async (id: string): Promise<Character[]> => {
+const view = async (id: string): Promise<Character> => {
   const character: Character[] = await repository.list({ id });
 
-  return character;
+  if (character.length === 0) {
+    throw new DocumentNotFound();
+  }
+
+  return character[0];
 };
 
-const create = async (character: Character): Promise<Character[]> => {
-  try {
-    const characterId = await repository.create(character);
+const create = async (character: Character): Promise<Character> => {
+  const characterId = await repository.create(character);
 
-    const characterNew = view(characterId[0].toString());
-    return characterNew;
-  } catch (error) {
-    return error;
+  if (!character) {
+    throw new HttpException(500, 'The character have not created');
   }
+
+  const characterNew = view(characterId[0].toString());
+  return characterNew;
 };
 
 const update = async (id: string, character: Character): Promise<number> => {
-  try {
-    const characterUpdated = await repository.update(id, character);
+  const characterUpdated = await repository.update(id, character);
 
-    return characterUpdated;
-  } catch (error) {
-    return error;
+  if (characterUpdated !== 1) {
+    throw new DocumentNotFound();
   }
+
+  return characterUpdated;
 };
 
 const del = async (id: string): Promise<number> => {
-  try {
-    const character = await repository.del(id);
+  const character = await repository.del(id);
 
-    return character;
-  } catch (error) {
-    return error;
+  if (character !== 1) {
+    throw new DocumentNotFound();
   }
+
+  return character;
 };
 
 const servies = {
