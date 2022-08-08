@@ -67,8 +67,8 @@ const importCharacter = async (req: Request, res: Response, next: NextFunction) 
 
         try {
           const characterImported = await serviceCharacter.create(character, token);
-          const locationsImported = await serviceLocation.create(location);
-          const originsImported = await serviceOrigin.create(origin);
+          const locationsImported = await serviceLocation.create(location, token);
+          const originsImported = await serviceOrigin.create(origin, token);
 
           const imported = {
             characters: characterImported,
